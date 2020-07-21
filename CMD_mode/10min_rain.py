@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
 
 import requests
 import time
@@ -34,11 +29,7 @@ def df_plt(temp_df):
 
     
     print("本程式由新北市政府消防局技佐郭峻廷提供 版本:0.9")
-    
-    
-    
-    
-    
+     
 while(True):
     try:
     
@@ -206,6 +197,7 @@ while(True):
             
         # def waters_safe():
         
+         S = str("我們是好朋友")
          
         
         # =============================================================================
