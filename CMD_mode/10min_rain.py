@@ -177,7 +177,10 @@ while(True):
         def df_10min_df(df_temp,mm):
             return (df_column_over_value(df_temp,"10分鐘",mm))
         
-        
+         # 超過1小時雨量的DF
+        def df_1hr_df(df_temp,mm):
+            return (df_column_over_value(df_temp,"1小時",mm))
+       
         # =============================================================================
         # 判斷雨量是否達標使用的函式
         # =============================================================================
@@ -244,12 +247,17 @@ while(True):
         # =============================================================================
         
         def SMS_10min(temp_df):
-            SMS = '新北市EOC:'+current_time[6:]
+            SMS = ''
             for dist,site,mm in zip(temp_df['鄉鎮'],temp_df['雨量站'],temp_df['10分鐘']):
                 SMS = SMS + dist + '(' + site + ')' + str(mm) + 'mm/10分鐘、'
-            SMS = SMS[:-1]+'。'
             return(SMS)
         
+        def SMS_1hr(temp_df):
+            SMS = ''
+            for dist,site,mm in zip(temp_df['鄉鎮'],temp_df['雨量站'],temp_df['1小時']):
+                SMS = SMS + dist + '(' + site + ')' + str(mm) + 'mm/1小時、'           
+            return(SMS)
+
         # =============================================================================
         #     
         # =============================================================================
@@ -290,13 +298,15 @@ while(True):
     
         
         print('')
-        # 顯示10分鐘雨量達標簡訊
+        # 顯示雨量達標簡訊
         if into_EOC():
-            print('10分鐘雨量簡訊:')
-            print(SMS_10min(df_10min_df(df,10)))
+            print('雨量簡訊:')
+            print('新北市EOC:'+current_time[6:]+SMS_10min(df_10min_df(df,10))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",focus_area),30))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",nonfocus_area),50))+'\b。')
         else:
-            print('10分鐘雨量未達標無簡訊')
+            print('雨量未達標無簡訊')
             
+        
+        
         print("\n準備重新下載雨量資料", end = '\r')
         print("5...", end = '\r')
         time.sleep(1)    
@@ -310,6 +320,7 @@ while(True):
         time.sleep(1)
         print("重新執行中           ", end = '\r')
         time.sleep(5)
-
+        
+    
     except: 
         continue
