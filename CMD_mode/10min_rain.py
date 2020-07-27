@@ -1,5 +1,42 @@
 # -*- coding: utf-8 -*-
 
+# =============================================================================
+# 依1090529水災手冊製作
+# 
+# 進駐EOC
+# 1.任一站10分鐘雨量10mm
+# 2.重點區時雨量達30mm
+# 3.非重點區時雨量達50mm
+# (消防局EOC啟動)
+# 
+# 雨情巡查
+# 重點區40mm、
+# 非重點區60mm
+# (消防局119啟動)
+# 
+# 水災強化三級
+# 【重點區】
+# 3站40mm、2站50mm、
+# 1站60mm
+# 且10分鐘雨量達10mm以上
+# 【非重點區】
+# 2站80mm、1站90mm
+# 且10分鐘雨量達15mm以上
+# (消防局EOC啟動)
+# 
+# 區公所強化三級
+# 重點區40mm、
+# 非重點區60mm
+# (區公所啟動、EOC複式通知)
+# 
+# 重點區：板橋區、三重區、永和區、新莊區、土城區、蘆洲區、樹林區、三峽區、中和區、汐止區、新店區、五股區、泰山區、鶯歌區、林口區、淡水區、八里區，共計17區。
+# 非重點區：三芝區、石門區、萬里區、金山區、瑞芳區、貢寮區、深坑區、烏來區、雙溪區、平溪區、石碇區、坪林區，共計12區。
+# 
+# =============================================================================
+
+
+
+
 import requests
 import time
 import pandas as pd
@@ -29,7 +66,11 @@ def df_plt(temp_df):
 
     
     print("本程式由新北市政府消防局技佐郭峻廷提供 版本:0.9")
-     
+    
+    
+    
+    
+    
 while(True):
     try:
     
@@ -70,8 +111,7 @@ while(True):
         # r0 = requests.post(url0, data = my_data, cookies = my_cookies, timeout = 3)
         # r1 = requests.get(url1, headers = my_headers, cookies = {'TS01c55bd7' : '0107dddfefd1ffe42fda2d207216ead0ded47bdf246819085c0aa15dac2d5e8b641eb632d2'}, timeout = 3)
         
-        df = pd.read_html(r.text, encoding='utf-8')
-        df = df[0]
+        df = pd.read_html(r.text, encoding='utf-8')[0]
         
         # 更改欄位名稱
         df.rename(columns={0 : "縣市",1 : "鄉鎮",2 : "雨量站",3 : "測站高度",4 : "10分鐘",5 : "1小時",6 : "3小時"
@@ -98,7 +138,7 @@ while(True):
         
         
         # =============================================================================
-        # 時間
+        # QPESUME最新雨量時間
         # =============================================================================
         html = etree.HTML(r.text)
         current_time = html.xpath('//html/body/div[11]/form/select/option[1]/text()')[0]
@@ -166,7 +206,7 @@ while(True):
         # =============================================================================
         # 是否進駐EOC
         def into_EOC():
-            if  df_10min_bool(df,10) or df_1hr_focus_bool(df,30) or df_1hr_nonfocus_bool(df,50):
+            if  df_10min_bool(df,10) or df_1hr_focus_bool(df_dist,30) or df_1hr_nonfocus_bool(df_dist,50):
                 return(True)
             else:
                 return(False)
@@ -197,7 +237,6 @@ while(True):
             
         # def waters_safe():
         
-         S = str("我們是好朋友")
          
         
         # =============================================================================
