@@ -39,33 +39,28 @@
 
 import requests
 import time
+from datetime import datetime
 import pandas as pd
 import os
 from lxml import etree
 from tabulate import tabulate
 
 
-def df_plt(temp_df):
-    import matplotlib.pyplot as plt
-    import matplotlib as mpl
-    
-    mpl.rcParams['font.sans-serif'] = ['Microsoft JhengHei']  #設置中文字體
-    mpl.rcParams['axes.unicode_minus'] = False
-    
-    
-    # DataFrame=>png
-    plt.figure('DF')            # 視窗名稱
-    ax = plt.axes(frame_on=False)# 不要額外框線
-    ax.xaxis.set_visible(False)  # 隱藏X軸刻度線
-    ax.yaxis.set_visible(False)  # 隱藏Y軸刻度線
-    pd.plotting.table(ax, temp_df, loc='center') #將df投射到ax上，且放置於ax的中間
-    plt.show()
-    # plt.savefig('table.jpg',dpi=200)     # 存檔
+focus_area = {'板橋區','三重區','永和區','新莊區','土城區','蘆洲區','樹林區'
+              ,'三峽區','中和區','汐止區','新店區','五股區','泰山區','鶯歌區'
+              ,'林口區','淡水區','八里區'}
+nonfocus_area = {'三芝區','石門區','萬里區','金山區','瑞芳區','貢寮區','深坑區'
+                  ,'烏來區','雙溪區','平溪區','石碇區','坪林區'}
+
+high_area = {'五股區','鶯歌區','林口區','三芝區','深坑區','烏來區','平溪區','石碇區',
+             '坪林區'}
+low_area = {'板橋區','三重區','永和區','新莊區','土城區','蘆洲區','樹林區','三峽區',
+            '中和區','汐止區','新店區','泰山區','淡水區','八里區','石門區','萬里區',
+            '金山區','瑞芳區','貢寮區','雙溪區'}
+
+waters_safe_area = {'烏來區','坪林區','三峽區','新店區'}
 
 
-
-    
-    print("本程式由新北市政府消防局技佐郭峻廷提供 版本:0.9")
     
     
     
@@ -73,20 +68,6 @@ def df_plt(temp_df):
     
 while(True):
     try:
-    
-        focus_area = {'板橋區','三重區','永和區','新莊區','土城區','蘆洲區','樹林區'
-                      ,'三峽區','中和區','汐止區','新店區','五股區','泰山區','鶯歌區'
-                      ,'林口區','淡水區','八里區'}
-        nonfocus_area = {'三芝區','石門區','萬里區','金山區','瑞芳區','貢寮區','深坑區'
-                          ,'烏來區','雙溪區','平溪區','石碇區','坪林區'}
-        
-        high_area = {'五股區','鶯歌區','林口區','三芝區','深坑區','烏來區','平溪區','石碇區',
-                     '坪林區'}
-        low_area = {'板橋區','三重區','永和區','新莊區','土城區','蘆洲區','樹林區','三峽區',
-                    '中和區','汐止區','新店區','泰山區','淡水區','八里區','石門區','萬里區',
-                    '金山區','瑞芳區','貢寮區','雙溪區'}
-        
-        waters_safe_area = {'烏來區','坪林區','三峽區','新店區'}
     
         # =============================================================================
         # 使用get提取網頁資料(需要有cookies) URL0、1為QPESUMS URL1為氣象局10分鐘雨量
@@ -110,6 +91,24 @@ while(True):
         r = requests.get(url, headers = my_headers, cookies = my_cookies, timeout = 3)
         # r0 = requests.post(url0, data = my_data, cookies = my_cookies, timeout = 3)
         # r1 = requests.get(url1, headers = my_headers, cookies = {'TS01c55bd7' : '0107dddfefd1ffe42fda2d207216ead0ded47bdf246819085c0aa15dac2d5e8b641eb632d2'}, timeout = 3)
+        
+        
+        # =============================================================================
+        # QPESUME最新雨量時間
+        # =============================================================================
+        html = etree.HTML(r.text)
+        current_time_temp = html.xpath('//html/body/div[11]/form/select/option[1]/text()')[0]
+        if 'current_time' in dir():
+            if str(current_time_temp) == str(current_time):
+                print('\r更新時間：'+datetime.now().strftime('%Y-%m-%d %H:%M:%S'), end = '')
+                time.sleep(5)
+                continue
+        current_time = current_time_temp
+
+
+        
+        
+        
         
         df = pd.read_html(r.text, encoding='utf-8')[0]
         
@@ -137,12 +136,6 @@ while(True):
         df.reset_index(drop=True, inplace=True)
         
         
-        # =============================================================================
-        # QPESUME最新雨量時間
-        # =============================================================================
-        html = etree.HTML(r.text)
-        current_time = html.xpath('//html/body/div[11]/form/select/option[1]/text()')[0]
-        current_time = str(current_time)
         
         # =============================================================================
         # 將過高測站刪除另存DF(雨情、強三使用)
@@ -301,26 +294,13 @@ while(True):
         # 顯示雨量達標簡訊
         if into_EOC():
             print('雨量簡訊:')
-            print('新北市EOC:'+current_time[6:]+SMS_10min(df_10min_df(df,10))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",focus_area),30))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",nonfocus_area),50))+'\b。')
+            print('新北市EOC:'+current_time[6:]+SMS_10min(df_10min_df(df,10))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",focus_area),30))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",nonfocus_area),50))+'\b\b。')
         else:
             print('雨量未達標無簡訊')
             
         
         
-        print("\n準備重新下載雨量資料", end = '\r')
-        print("5...", end = '\r')
-        time.sleep(1)    
-        print("4...", end = '\r')
-        time.sleep(1)
-        print("3...", end = '\r')
-        time.sleep(1)
-        print("2...", end = '\r')
-        time.sleep(1)
-        print("1...", end = '\r')
-        time.sleep(1)
-        print("重新執行中           ", end = '\r')
-        time.sleep(5)
-        
+        print("\nQPESUMS更新雨量資料將自動顯示", end = '\n\n')
     
     except: 
         continue
