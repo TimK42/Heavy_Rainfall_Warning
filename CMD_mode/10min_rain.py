@@ -97,13 +97,14 @@ while(True):
         # QPESUME最新雨量時間
         # =============================================================================
         html = etree.HTML(r.text)
-        current_time_temp = html.xpath('//html/body/div[11]/form/select/option[1]/text()')[0]
-        if 'current_time' in dir():
-            if str(current_time_temp) == str(current_time):
+        qpesumes_time_temp = html.xpath('//html/body/div[11]/form/select/option[1]/text()')[0]
+
+        if 'qpesumes_current_time' in dir():
+            if str(qpesumes_time_temp) == str(qpesumes_current_time):
                 print('\r更新時間：'+datetime.now().strftime('%Y-%m-%d %H:%M:%S'), end = '')
                 time.sleep(5)
                 continue
-        current_time = current_time_temp
+        qpesumes_current_time = qpesumes_time_temp
 
 
         
@@ -260,7 +261,7 @@ while(True):
             
         print('\r\r\r\r')
         # print(df.head(10).sort_values('10分鐘', ascending=False))
-        print(str(current_time) +'，前10名雨量站(依10分鐘雨量及1小時雨量排序):')
+        print(str(qpesumes_current_time) +'，前10名雨量站(依10分鐘雨量及1小時雨量排序):')
         print(tabulate(df.head(10).sort_values('1小時', ascending=False).sort_values('10分鐘', ascending=False), headers='keys', tablefmt= 'fancy_grid', numalign="right"))
         print('')
         
@@ -294,7 +295,7 @@ while(True):
         # 顯示雨量達標簡訊
         if into_EOC():
             print('雨量簡訊:')
-            print('新北市EOC:'+current_time[6:]+SMS_10min(df_10min_df(df,10))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",focus_area),30))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",nonfocus_area),50))+'\b\b。')
+            print('新北市EOC:'+qpesumes_current_time[6:]+SMS_10min(df_10min_df(df,10))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",focus_area),30))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",nonfocus_area),50))+'\b\b。')
         else:
             print('雨量未達標無簡訊')
             
