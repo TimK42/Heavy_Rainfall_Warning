@@ -188,7 +188,7 @@ while(True):
         
         # (非重點區)1小時雨量是否達mm
         def df_1hr_nonfocus_bool(df_temp,mm):
-            return (df_column_over_value(df_column_isin_values(df_temp,"鄉鎮",focus_area),"1小時",mm)['1小時'].any())
+            return (df_column_over_value(df_column_isin_values(df_temp,"鄉鎮",nonfocus_area),"1小時",mm)['1小時'].any())
         
         # (重點區)1小時雨量達mm的數量
         def df_1hr_focus_count(df_temp,mm,count):
@@ -302,6 +302,7 @@ while(True):
         
         
         print("\nQPESUMS更新雨量資料將自動顯示", end = '\n\n')
+    
     
     except: 
         continue
