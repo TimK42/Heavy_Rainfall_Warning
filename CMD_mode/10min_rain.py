@@ -307,8 +307,7 @@ while(True):
         
         
         print("\nQPESUMS更新雨量資料時將自動更新")
-        
-        break    
+          
     
     except: 
         continue
