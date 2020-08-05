@@ -137,7 +137,8 @@ while(True):
         df.sort_values("1小時",ascending=False, inplace=True)
         df.sort_values("10分鐘",ascending=False, inplace=True)
         df.reset_index(drop=True, inplace=True)
-        
+        df.index += 1
+
         
         
         # =============================================================================
@@ -265,7 +266,7 @@ while(True):
         print('\r\r\r\r')
         # print(df.head(10).sort_values('10分鐘', ascending=False))
         print(str(qpesumes_current_time) +'，前10名雨量站(依10分鐘雨量及1小時雨量排序):')
-        print(tabulate(df.head(10).sort_values('1小時', ascending=False).sort_values('10分鐘', ascending=False), headers='keys', tablefmt= 'fancy_grid', numalign="right"))
+        print(tabulate(df.head(10).sort_values('6小時', ascending=False).sort_values('3小時', ascending=False).sort_values('1小時', ascending=False).sort_values('10分鐘', ascending=False), headers='keys', tablefmt= 'fancy_grid', numalign="right"))
         print('')
         
         print('開設及進駐警示：')
@@ -307,7 +308,7 @@ while(True):
         
         
         print("\nQPESUMS更新雨量資料時將自動更新")
-          
+        
     
     except: 
         continue
