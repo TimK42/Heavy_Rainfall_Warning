@@ -102,13 +102,15 @@ while(True):
         if 'qpesumes_current_time' in dir():
             if str(qpesumes_time_temp) == str(qpesumes_current_time):
                 print('\r更新時間：'+datetime.now().strftime('%Y-%m-%d %H:%M:%S'), end = '')
-                time.sleep(5)
+                time.sleep(1)
                 continue
         qpesumes_current_time = qpesumes_time_temp
 
 
         
-        
+        # =============================================================================
+        # DF資料處理        
+        # =============================================================================
         
         
         df = pd.read_html(r.text, encoding='utf-8')[0]
@@ -246,18 +248,19 @@ while(True):
                 SMS = SMS + dist + '(' + site + ')' + str(mm) + 'mm/10分鐘、'
             return(SMS)
         
-        def SMS_1hr(temp_df):
-            SMS = ''
-            for dist,site,mm in zip(temp_df['鄉鎮'],temp_df['雨量站'],temp_df['1小時']):
-                SMS = SMS + dist + '(' + site + ')' + str(mm) + 'mm/1小時、'           
-            return(SMS)
+        # 整備科表示10分鐘10mm簡訊不包含時雨量達標測站
+        # def SMS_1hr(temp_df):
+        #     SMS = ''
+        #     for dist,site,mm in zip(temp_df['鄉鎮'],temp_df['雨量站'],temp_df['1小時']):
+        #         SMS = SMS + dist + '(' + site + ')' + str(mm) + 'mm/1小時、'           
+        #     return(SMS)
 
         # =============================================================================
         #     
         # =============================================================================
         os.system("cls");
-        print("本程式由新北市政府消防局技佐郭峻廷提供 版本:0.9")
-        print("下載氣象局QPESUMS最新雨量資訊...") 
+        print("本程式由新北市政府消防局技佐郭峻廷提供 版本:0.91")
+        print("資料來源：氣象局QPESUMS網站雨量觀測資料") 
             
         print('\r\r\r\r')
         # print(df.head(10).sort_values('10分鐘', ascending=False))
@@ -265,44 +268,47 @@ while(True):
         print(tabulate(df.head(10).sort_values('1小時', ascending=False).sort_values('10分鐘', ascending=False), headers='keys', tablefmt= 'fancy_grid', numalign="right"))
         print('')
         
-        print('開設及進駐警示；')
+        print('開設及進駐警示：')
             # 顯示是否進駐EOC
         if into_EOC():
-            print("○：EOC輪值人員進駐")
+            print(" ○ ：EOC輪值人員進駐")
         else:
-            print("Ｘ：EOC輪值人員進駐")
+            print(" Ｘ ：EOC輪值人員進駐")
             
         # 顯示是否強化三級開設
         if EOC_flood_force_3():
-            print("○：EOC強化三級開設")
+            print(" ○ ：EOC強化三級開設")
         else:
-            print("Ｘ：EOC強化三級開設")
+            print(" Ｘ ：EOC強化三級開設")
         
         # 顯示是否區級強化三級開設
         if EOC_flood_force_3():
-            print("○：行政區強化三級開設")
+            print(" ○ ：行政區強化三級開設")
         else:
-            print("Ｘ：行政區強化三級開設")
+            print(" Ｘ ：行政區強化三級開設")
         
         # 顯示是否雨情巡查
         if rain_patrol():
-            print("○：雨情巡查")
+            print(" ○ ：雨情巡查")
         else:
-            print("Ｘ：雨情巡查")
+            print(" Ｘ ：雨情巡查")
     
         
         print('')
         # 顯示雨量達標簡訊
         if into_EOC():
-            print('雨量簡訊:')
-            print('新北市EOC:'+qpesumes_current_time[6:]+SMS_10min(df_10min_df(df,10))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",focus_area),30))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",nonfocus_area),50))+'\b\b。')
+            print('10分鐘10mm雨量簡訊稿(參考):')
+            # 整備科表示10分鐘10mm簡訊不包含時雨量達標測站
+            # print('新北市EOC:'+qpesumes_current_time[6:]+SMS_10min(df_10min_df(df,10))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",focus_area),30))+SMS_1hr(df_1hr_df(df_column_isin_values(df_dist,"鄉鎮",nonfocus_area),50))+'\b\b。')
+            print('新北市EOC:'+qpesumes_current_time[6:]+SMS_10min(df_10min_df(df,10))+'\b\b。')
         else:
-            print('雨量未達標無簡訊')
+            print('10分鐘10mm雨量未達標無簡訊稿(參考)')
             
         
         
-        print("\nQPESUMS更新雨量資料將自動顯示", end = '\n\n')
-    
+        print("\nQPESUMS更新雨量資料時將自動更新")
+        
+        break    
     
     except: 
         continue
