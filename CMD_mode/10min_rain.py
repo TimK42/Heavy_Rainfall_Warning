@@ -134,8 +134,7 @@ while(True):
         # 將Nan更改為-1
         df.fillna(-1, inplace=True)
         # 排序後重設INDEX
-        df.sort_values("1小時",ascending=False, inplace=True)
-        df.sort_values("10分鐘",ascending=False, inplace=True)
+        df.sort_values(by=["10分鐘","1小時","3小時","6小時"],ascending=False, inplace=True)
         df.reset_index(drop=True, inplace=True)
         df.index += 1
 
@@ -266,34 +265,33 @@ while(True):
         print('\r\r\r\r')
         # print(df.head(10).sort_values('10分鐘', ascending=False))
         print(str(qpesumes_current_time) +'，前10名雨量站(依10分鐘雨量及1小時雨量排序):')
-        print(tabulate(df.head(10).sort_values('6小時', ascending=False).sort_values('3小時', ascending=False).sort_values('1小時', ascending=False).sort_values('10分鐘', ascending=False), headers='keys', tablefmt= 'fancy_grid', numalign="right"))
+        print(tabulate(df.head(10), headers='keys', tablefmt= 'fancy_grid', numalign="right"))
         print('')
         
-        print('開設及進駐警示：')
+        print('開設及進駐警示(參考)：')
             # 顯示是否進駐EOC
         if into_EOC():
-            print(" ○ ：EOC輪值人員進駐")
+            print(" ○：EOC輪值人員進駐")
         else:
-            print(" Ｘ ：EOC輪值人員進駐")
+            print(" ╳ ：EOC輪值人員進駐")
             
         # 顯示是否強化三級開設
         if EOC_flood_force_3():
-            print(" ○ ：EOC強化三級開設")
+            print(" ○：EOC強化三級開設")
         else:
-            print(" Ｘ ：EOC強化三級開設")
+            print(" ╳ ：EOC強化三級開設")
         
         # 顯示是否區級強化三級開設
-        if EOC_flood_force_3():
-            print(" ○ ：行政區強化三級開設")
+        if Dist_force_3():
+            print(" ○：部分行政區強化三級開設")
         else:
-            print(" Ｘ ：行政區強化三級開設")
+            print(" ╳ ：部分行政區強化三級開設")
         
         # 顯示是否雨情巡查
         if rain_patrol():
-            print(" ○ ：雨情巡查")
+            print(" ○：雨情巡查")
         else:
-            print(" Ｘ ：雨情巡查")
-    
+            print(" ╳ ：雨情巡查")
         
         print('')
         # 顯示雨量達標簡訊
@@ -308,6 +306,9 @@ while(True):
         
         
         print("\nQPESUMS更新雨量資料時將自動更新")
+        
+        # 測試用
+        # break
         
     
     except: 
