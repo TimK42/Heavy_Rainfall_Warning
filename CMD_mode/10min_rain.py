@@ -60,7 +60,7 @@ low_area = {'板橋區','三重區','永和區','新莊區','土城區','蘆洲�
 
 waters_safe_area = {'烏來區','坪林區','三峽區','新店區'}
 
-
+hash_temp = ''
     
     
     
@@ -89,23 +89,20 @@ while(True):
                       '__utmz' : '173357155.1593327131.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)',
                       'onalert' : 'taiwan!mosaic!none!1!RCKT!taiwan!mosaic!125!100!nidsB!0!1!0!0!1!0!0!0!0!0!0!0!0!0!0!0!0!0!0!0!0!0!1!0!0!0!0!0!0!0!0!0!0!0!0!0!0!0!1!0!0!!!!!!!!!'}
         r = requests.get(url, headers = my_headers, cookies = my_cookies, timeout = 3)
-        # r0 = requests.post(url0, data = my_data, cookies = my_cookies, timeout = 3)
-        # r1 = requests.get(url1, headers = my_headers, cookies = {'TS01c55bd7' : '0107dddfefd1ffe42fda2d207216ead0ded47bdf246819085c0aa15dac2d5e8b641eb632d2'}, timeout = 3)
-        
-        
+     
+        # =============================================================================
+        # 利用HASH比對前後次網頁text是否一樣，一樣的話就continue 不做後面的內容
+        # =============================================================================
+        if hash_temp == hash(r.text):
+            print('\r更新時間：'+datetime.now().strftime('%Y-%m-%d %H:%M:%S'), end = '')
+            time.sleep(5)
+            continue
+        hash_temp = hash(r.text)
         # =============================================================================
         # QPESUME最新雨量時間
         # =============================================================================
         html = etree.HTML(r.text)
-        qpesumes_time_temp = html.xpath('//html/body/div[11]/form/select/option[1]/text()')[0]
-
-        if 'qpesumes_current_time' in dir():
-            if str(qpesumes_time_temp) == str(qpesumes_current_time):
-                print('\r更新時間：'+datetime.now().strftime('%Y-%m-%d %H:%M:%S'), end = '')
-                time.sleep(1)
-                continue
-        qpesumes_current_time = qpesumes_time_temp
-
+        qpesumes_current_time = html.xpath('//html/body/div[11]/form/select/option[1]/text()')[0]
 
         
         # =============================================================================
@@ -305,7 +302,12 @@ while(True):
             
         
         
-        print("\nQPESUMS更新雨量資料時將自動更新")
+        print("\n自動更新QPESUMS網站雨量觀測資料")
+        print('\r更新時間：'+datetime.now().strftime('%Y-%m-%d %H:%M:%S'), end = '')
+        
+        print('\n'+hash(r.text))
+        
+        time.sleep(5)
         
         # 測試用
         # break
