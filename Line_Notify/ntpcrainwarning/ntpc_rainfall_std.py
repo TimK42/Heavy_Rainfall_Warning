@@ -78,7 +78,7 @@ def into_eoc(t, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_
             key_area_rain_df, 30) or ntpcrainwarning.ntpc_rainfall_std.df_1hr_non_key_bool(
             non_key_area_rain_df, 50):
         msg = '\n提醒：進駐EOC\n\n' + current_time + '：\n雨量達進駐EOC標準'
-        line_push.linePush.line_push_text(t, msg)
+        ntpcrainwarning.linePush.line_push_text(t, msg)
         return True
 
 
@@ -87,7 +87,7 @@ def rain_over_10(t, county_rain_df, key_area_rain_df, non_key_area_rain_df, curr
     if ntpcrainwarning.ntpc_rainfall_std.df_10min_bool(county_rain_df, 10):
         sms = '\n10mm簡訊稿\n\n' + ntpcrainwarning.ntpc_rainfall_std.message_10min(county_rain_df, current_time)
         # LINE推播10分鐘雨量簡訊稿
-        line_push.linePush.line_push_text(t, sms)
+        ntpcrainwarning.linePush.line_push_text(t, sms)
         return True
 
 
@@ -100,18 +100,18 @@ def eoc_flood_force_3(t, county_rain_df, key_area_rain_df, non_key_area_rain_df,
                 key_area_rain_df, 50, 2) or ntpcrainwarning.ntpc_rainfall_std.df_1hr_key_count(
                 key_area_rain_df, 60, 1)):
         # LINE推播
-        line_push.linePush.line_push_text(t, msg)
+        ntpcrainwarning.linePush.line_push_text(t, msg)
         return True
     if ntpcrainwarning.ntpc_rainfall_std.df_10min_bool(county_rain_df, 10) and (
             ntpcrainwarning.ntpc_rainfall_std.df_1hr_non_key_count(
                 non_key_area_rain_df, 80, 2) or ntpcrainwarning.ntpc_rainfall_std.df_1hr_non_key_count(
                 non_key_area_rain_df, 90, 1)):
         # LINE推播
-        line_push.linePush.line_push_text(t, msg)
+        ntpcrainwarning.linePush.line_push_text(t, msg)
         return True
 
 
-# 推播區級強化三級開設
+# 是否區級強化三級開設
 def dist_force_3(t, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time):
     if ntpcrainwarning.ntpc_rainfall_std.df_1hr_key_bool(
             key_area_rain_df, 40) or ntpcrainwarning.ntpc_rainfall_std.df_1hr_non_key_bool(
@@ -122,11 +122,11 @@ def dist_force_3(t, county_rain_df, key_area_rain_df, non_key_area_rain_df, curr
             msg = msg + i[0]
         msg = msg + '區公所強三\n\n' + current_time + '：\n部分行政區雨量達強化三級開設標準'
         # LINE推播
-        line_push.linePush.line_push_text(t, msg)
+        ntpcrainwarning.linePush.line_push_text(t, msg)
         return dist_list
 
 
-# 推播雨情巡查
+# 是否雨情巡查
 def rain_patrol(t, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time):
     if ntpcrainwarning.ntpc_rainfall_std.df_1hr_key_bool(
             key_area_rain_df, 40) or ntpcrainwarning.ntpc_rainfall_std.df_1hr_non_key_bool(
@@ -137,18 +137,18 @@ def rain_patrol(t, county_rain_df, key_area_rain_df, non_key_area_rain_df, curre
             msg = msg + i[0]
         msg = msg + '雨情巡查\n\n' + current_time + '：\n部分行政區雨量達雨情巡查標準'
         # LINE推播
-        line_push.linePush.line_push_text(t, msg)
+        ntpcrainwarning.linePush.line_push_text(t, msg)
         return dist_list
 
 
-# 推播雨量表
-def rain_table(token, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time):
-    if into_eoc(token, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time) or eoc_flood_force_3(
-            token, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time) or dist_force_3(
-            token, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time) or rain_patrol(
-            token, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time):
+# 是否需要推播雨量表
+def rain_table(t, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time):
+    if into_eoc(t, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time) or eoc_flood_force_3(
+            t, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time) or dist_force_3(
+            t, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time) or rain_patrol(
+            t, county_rain_df, key_area_rain_df, non_key_area_rain_df, current_time):
         # LINE推播雨量圖片
         msg = 'Qpesums雨量觀測資料'
-        file = line_push.rain_pic.df_plt(county_rain_df.head(20), current_time)
-        line_push.linePush.line_push_pic(token, msg, file)
+        file = ntpcrainwarning.rain_pic.df_plt(county_rain_df.head(20), current_time)
+        ntpcrainwarning.linePush.line_push_pic(t, msg, file)
         return True
