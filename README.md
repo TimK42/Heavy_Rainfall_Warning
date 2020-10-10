@@ -1,4 +1,4 @@
-# 新北市災害防救監測雨量(Waterflood and Heavy rainfall warning in New Taipei City)
+# 新北市災害防救監測雨量(Heavy Rainfall Warning in New Taipei City)
 ## 目錄:
 * Command_line:使用windows cmd 或 Linux terminal執行
 * line_notify:利用crontab或其它方式，定時執行main.py
