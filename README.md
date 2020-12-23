@@ -6,7 +6,7 @@
 
 ## resource & thanks
 * 1.Python教學-如何解決matplotlib中文亂碼問題(PyInvest):https://pyecontech.com/2020/03/27/python%E6%95%99%E5%AD%B8-%E5%A6%82%E4%BD%95%E8%A7%A3%E6%B1%BAmatplotlib%E4%B8%AD%E6%96%87%E4%BA%82%E7%A2%BC%E5%95%8F%E9%A1%8C/
-* 2.劇烈天氣監測系統(中央氣象局):http://117.56.4.156/taiwan-html/
+* 2.中央氣象局資料開放平台:https://opendata.cwb.gov.tw
 * 3.水災應變機制啟動標準(新北市政府消防局)
 
 
