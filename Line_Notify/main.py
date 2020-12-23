@@ -14,7 +14,7 @@ import gc
 # 測試模式開關
 # test = False
 county = '新北市'
-token = "1xolsS8ixHW6ITD1XjD9kjOF21j8Rx1CKQGfArgtsWj"
+token = "token"
 
 
 # 查詢上一次的雨量json
