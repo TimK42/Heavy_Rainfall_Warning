@@ -10,12 +10,15 @@ from lxml import etree
 from tabulate import tabulate
 import ntpcrainwarning
 import gc
+from dotenv import load_dotenv
+
+load_dotenv()  # 讀取 .env 檔案
 
 # 查詢上一次的雨量json
 
 county = '新北市'
 # 要LINE PUSH，輸入TOKEN；不要LINE PUSH，輸入no
-token = "no"
+token = os.getenv("LINE_NOTIFY_TOKEN", "no")
 
 
 def check_html_from_json(df):
