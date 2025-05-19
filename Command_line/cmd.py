@@ -29,12 +29,12 @@ def check_html_from_json(df):
         return False
 
 
+
 # 儲存這一次的雨量json
 def update_html_to_json(df):
     new_json = df.to_json()
     ntpcrainwarning.check_json.write_json(new_json)
     return
-
 
 
 def main():
